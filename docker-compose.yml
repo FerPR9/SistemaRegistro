@@ -1,0 +1,45 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    #deploy:
+      #resources:
+      #  limits:
+      #    memory: 512M      
+      #    cpus: "0.5"       
+
+  sistema-registro-back:
+    build:
+      context: ./BACK/BACK
+    container_name: sistema-registro-back
+    ports:
+      - 3000:3000
+    environment:
+      MONGODB_URL: "mongodb+srv://estudiantefernanda:estudiantefernanda@cluster0.4d9snid.mongodb.net/sistema_ventas_db?retryWrites=true&w=majority"
+    depends_on:
+      - mongodb
+    #deploy:
+    #  resources:
+    #    limits:
+    #      memory: 512M     
+    #      cpus: "0.5"
+
+  sistema-de-registro:
+    build:
+      context: ./Sistema-de-Registro/Sistema-de-Registro
+    container_name: sistema-de-registro
+    ports:
+      - 80:80
+    depends_on:
+      - sistema-registro-back
+    #deploy:
+    #  resources:
+    #    limits:
+    #      memory: 512M     
+    #      cpus: "0.5"
+volumes:
+  mongodb_data:
